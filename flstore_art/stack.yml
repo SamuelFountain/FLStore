@@ -1,0 +1,170 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  k-mean:
+    lang: python3
+    handler: ./k-mean
+    image: fount032/k-mean:latest
+    limits:
+      memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  infr:
+    lang: python3
+    handler: ./infr
+    image: fount032/infr:latest
+    limits:
+      memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  incentive-dist:
+    lang: python3
+    handler: ./incentive-dist
+    image: fount032/incentive-dist:latest
+    limits:
+      memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  contribution-calculation:
+    lang: python3
+    handler: ./contribution-calculation
+    image: fount032/contribution-calculation:latest
+    limits:
+      memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  cluster-based-personalization:
+    lang: python3
+    handler: ./cluster-based-personalization
+    image: fount032/cluster-based-personalization:latest
+    limits:
+      memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  cosine-sim-mal-clients:
+    lang: python3
+    handler: ./cosine-sim-mal-clients
+    image: fount032/cosine-sim-mal-clients:latest
+    limits:
+      memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  client-scheduling-cosine-sim:
+    lang: python3
+    handler: ./client-scheduling-cosine-sim
+    image: fount032/client-scheduling-cosine-sim:latest
+    limits:
+      memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  client-scheduling-inf:
+    lang: python3
+    handler: ./client-scheduling-inf
+    image: fount032/client-scheduling-inf:latest
+    limits:
+      memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  aggreb:
+    lang: python3
+    handler: ./aggreb
+    image: fount032/aggreb:latest
+    limits:
+      memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  debug:
+    lang: python3
+    handler: ./debug
+    image: fount032/debug:latest
+    limits:
+      memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  llama:
+    lang: python3
+    handler: ./llama
+    image: fount032/llama:latest
+    limits:
+      memory: 10Gi
+      #memory: 10g
+    requests:
+      memory: 10Gi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s

@@ -1,0 +1,11 @@
+scikit-learn
+numpy
+minio
+torch
+torchvision
+torchaudio
+timm
+pytorch-lightning
+diskcache
+dotmap
+tensorflow
