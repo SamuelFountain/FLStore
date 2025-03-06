@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
 # Installing Software
-## TODO DOCKER
-## TODO CONDA
+## TODO INSTALL DOCKER
+## TODO INSTALL CONDA
 ## kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
@@ -27,11 +27,10 @@ else
 fi
 docker run -p 9000:9000 -d -p 9001:9001 -e "MINIO_ROOT_USER=minio99" -e "MINIO_ROOT_PASSWORD=minio123" quay.io/minio/minio server ./data --console-address ":9001"
 
+# TODO Populate Minio Data Here
 
 
 # Setting Up Cluster
-
-
 # Define the k3s version
 K3S_VERSION="v1.24"
 
@@ -99,3 +98,5 @@ sleep 1
 cd functions
 faas-cli deploy
 faas-cli list
+
+# TODO Run experiments here
