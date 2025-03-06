@@ -49,34 +49,53 @@ k3sup install --local --k3s-channel $K3S_VERSION \
 
 
 echo "Waiting for all pods to become Ready..."
-#kubectl wait --for=condition=Ready pods --all --timeout=600s -n kube-system
-#echo "All pods are Ready."
-#
-#echo "k3s cluster installation complete."
-#
-## Setting up open Faas
-#export TIMEOUT=11m
-#export HARD_TIMEOUT=12m2s
-#
-#arkade install openfaas --set=faasIdler.dryRun=false \
-#  --set gateway.upstreamTimeout=$TIMEOUT \
-#  --set gateway.writeTimeout=$HARD_TIMEOUT \
-#  --set gateway.readTimeout=$HARD_TIMEOUT
-#
-# sleep 10
-# kubectl get deploy --namespace openfaas
-# 
-# kubectl rollout status -n openfaas deploy/gateway
-# 
-# kubectl port-forward -n openfaas svc/gateway 8080:8080 &
-# 
-# sleep 1
-# export PASSWORD=$(
-#   kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode
-#   echo
-#        )
-# echo -n $PASSWORD | faas-cli login --username admin --password-stdin
-# 
-# sleep 1
-# faas-cli deploy
-# faas-cli list
+export KUBECONFIG=/tmp/config
+kubectl config use-context default
+# Wait until at least one pod exists in kube-system
+until kubectl get pods -n kube-system | grep -q 'core'; do
+    echo "Waiting for pods to be created..."
+    sleep 2
+done
+echo "Found core dns, still waiting for pods to be created..."
+# Now wait for all pods to be Ready
+kubectl wait --for=condition=Ready pods --all --timeout=600s -n kube-system
+
+kubectl get node -o wide
+echo "All pods are Ready."
+
+echo "k3s cluster installation complete."
+
+# Setting up open Faas
+export TIMEOUT=11m
+export HARD_TIMEOUT=12m2s
+
+arkade install openfaas --set=faasIdler.dryRun=false \
+  --set gateway.upstreamTimeout=$TIMEOUT \
+  --set gateway.writeTimeout=$HARD_TIMEOUT \
+  --set gateway.readTimeout=$HARD_TIMEOUT
+
+
+until kubectl get pods -n openfaas | grep -q 'nats'; do
+    echo "Waiting for pods to be created..."
+    sleep 2
+done
+echo "Found nats, still waiting for pods to be created..."
+kubectl wait --for=condition=available --timeout=600s deployment --all --namespace openfaas
+kubectl get deploy --namespace openfaas
+
+kubectl rollout status -n openfaas deploy/gateway
+
+kubectl port-forward -n openfaas svc/gateway 8080:8080 &
+
+sleep 1
+export PASSWORD=$(
+  kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode
+  echo
+      )
+echo -n $PASSWORD | faas-cli login --username admin --password-stdin
+
+sleep 1
+
+cd functions
+faas-cli deploy
+faas-cli list

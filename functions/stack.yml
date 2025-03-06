@@ -153,18 +153,18 @@ functions:
       exec_timeout: 50m
       handler_wait_duration: 50m50s
       healthcheck_interval: 50s
-  llama:
-    lang: python3
-    handler: ./llama
-    image: fount032/llama:latest
-    limits:
-      memory: 10Gi
-      #memory: 10g
-    requests:
-      memory: 10Gi
-    environment:
-      write_timeout: 10m2s
-      read_timeout: 10m2s
-      exec_timeout: 50m
-      handler_wait_duration: 50m50s
-      healthcheck_interval: 50s
+#  llama:
+#    lang: python3
+#    handler: ./llama
+#    image: fount032/llama:latest
+#    limits:
+#      memory: 10Gi
+#      #memory: 10g
+#    requests:
+#      memory: 10Gi
+#    environment:
+#      write_timeout: 10m2s
+#      read_timeout: 10m2s
+#      exec_timeout: 50m
+#      handler_wait_duration: 50m50s
+#      healthcheck_interval: 50s
