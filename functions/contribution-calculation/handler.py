@@ -284,7 +284,7 @@ def main():
 
     PER_CLIENT = False
 
-    for round_no in range(1, 50):
+    for round_no in range(1, 6):
         accuracies = []
 
         print(f"Processing round {round_no}")

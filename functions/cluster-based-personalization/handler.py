@@ -15,7 +15,6 @@ import os
 import random
 from urllib.parse import parse_qs
 
-
 sys.path.insert(0, "/home/app/function/utils")
 
 from minio_data import readAndCreateModels
@@ -53,11 +52,11 @@ def model_inference(dataset, model):
     Perform inference with a single model and calculate the accuracy.
 
     Args:
-    dataset (list): The dataset used for evaluation.
-    model (PyTorch model): The model to evaluate.
+        dataset (list): The dataset used for evaluation.
+        model (PyTorch model): The model to evaluate.
 
     Returns:
-    float: The accuracy of the model.
+        float: The accuracy of the model.
     """
     model.eval()
     correct = 0
@@ -80,10 +79,10 @@ def aggregate_models(models):
     Aggregate multiple models by averaging their parameters.
 
     Args:
-    models (list of PyTorch models): Models to be aggregated.
+        models (list of PyTorch models): Models to be aggregated.
 
     Returns:
-    PyTorch model: The aggregated model.
+        PyTorch model: The aggregated model.
     """
     aggregated_model = copy.deepcopy(models[0])
     param_keys = list(aggregated_model.state_dict().keys())
@@ -102,11 +101,11 @@ def weighted_aggregate_models(models, weights):
     Aggregate multiple models by averaging their parameters with weights.
 
     Args:
-    models (list of PyTorch models): Models to be aggregated.
-    weights (list of floats): Weights for each model.
+        models (list of PyTorch models): Models to be aggregated.
+        weights (list of floats): Weights for each model.
 
     Returns:
-    PyTorch model: The aggregated model.
+        PyTorch model: The aggregated model.
     """
     aggregated_model = copy.deepcopy(models[0])
     param_keys = list(aggregated_model.state_dict().keys())
@@ -130,11 +129,11 @@ def model_performance(dataset, model):
     Calculate the performance of a model on a given dataset.
 
     Args:
-    dataset (list): The dataset used for evaluation.
-    model (PyTorch model): The model to evaluate.
+        dataset (list): The dataset used for evaluation.
+        model (PyTorch model): The model to evaluate.
 
     Returns:
-    float: The accuracy of the model.
+        float: The accuracy of the model.
     """
     model.eval()
     correct = 0
@@ -157,12 +156,12 @@ def calculate_shapley_values(client_ids, models, dataset):
     Calculate the Shapley values by evaluating the performance impact of leaving out each model.
 
     Args:
-    client_ids (list): List of client IDs.
-    models (list): List of PyTorch models corresponding to client IDs.
-    dataset (list): The dataset used for evaluation.
+        client_ids (list): List of client IDs.
+        models (list): List of PyTorch models corresponding to client IDs.
+        dataset (list): The dataset used for evaluation.
 
     Returns:
-    dict: A dictionary of client IDs to their Shapley values.
+        dict: A dictionary of client IDs to their Shapley values.
     """
     all_models = models
     full_model = aggregate_models(all_models)
@@ -179,7 +178,7 @@ def calculate_shapley_values(client_ids, models, dataset):
             )
         else:
             performance_without_current = (
-                0  # If no other models, the performance is assumed zero
+                0  # If no other models, assume performance is zero
             )
 
         # Calculate the marginal contribution
@@ -195,23 +194,22 @@ def fetch_data_from_minio(
     test=True,
     sample_propotion=1.0,
 ):
-    """args:
-    bucket_name: Name of the bucket
-    dataset_name: Name of the dataset
-    test: If True, fetch the test dataset, else fetch the training dataset
-    returns:
-    dataset: List of tuples of images and labels
     """
-    images, labels = fetch_dataset(
-        bucket_name, dataset_name, test
-    )  # Assuming this fetches images and labels correctly
-    dataset = list(
-        zip(images, labels)
-    )  # Pair each image with its corresponding label
-    # randomly sample the dataset
+    Fetch dataset from MinIO.
+
+    Args:
+        bucket_name (str): Name of the bucket.
+        dataset_name (str): Name of the dataset.
+        test (bool): If True, fetch the test dataset; else fetch the training dataset.
+        sample_propotion (float): Proportion of the dataset to sample.
+
+    Returns:
+        list: List of tuples pairing images and labels.
+    """
+    images, labels = fetch_dataset(bucket_name, dataset_name, test)
+    dataset = list(zip(images, labels))
     if sample_propotion < 1:
         dataset = random.sample(dataset, int(len(dataset) * sample_propotion))
-
     return dataset
 
 
@@ -220,20 +218,11 @@ def main(req):
     round_no = int(configs["round"][0])
     print(f"Processing round {round_no}")
     round_no = str(round_no)
-    args = sys.argv
-    ROUNDS = 500
     PER_CLIENT = True
-    tokens = 100000
-    tokens_per_round = tokens / ROUNDS
     accuracies = {}
-    tokens_per_client = {}
-    print(f"Processing round {round_no}")
-    round_no = str(round_no)
     gc.collect()
     clear_cache()
     start_total_time = time.time()
-    start_total_time = time.time()
-    round_no = str(round_no)
     start_fetch_time = time.time()
     client_models_per_round = readAndCreateModels(round_no)
     dataset = fetch_data_from_minio()
@@ -245,27 +234,27 @@ def main(req):
 
     if PER_CLIENT:
         for client_id, model in zip(client_ids, models):
-            # Model inference
-            # accuracies.append(model_inferece(dataset, model))
-            accuracies[client_id] = model_inferece(dataset, model)
-        # get top-k accuracy models
+            accuracies[client_id] = model_inference(dataset, model)
+        # Get top-k accuracy models
         top_k = 5
-        top_k_models = dict(
-            sorted(accuracies.items(), key=lambda item: item[1], reverse=True)[
-                :top_k
-            ]
-        )
-        average_model = weighted_aggregate_models(
-            list(top_k_models.keys()), list(top_k_models.values())
-        )
+        # Retrieve top-k client ids sorted by accuracy
+        top_k_client_ids = sorted(
+            accuracies, key=accuracies.get, reverse=True
+        )[:top_k]
+        # Retrieve the corresponding model objects
+        top_k_models = [
+            client2models[client_id] for client_id in top_k_client_ids
+        ]
+        # Get the weights (accuracies) for the top-k models
+        top_k_weights = [
+            accuracies[client_id] for client_id in top_k_client_ids
+        ]
+        # Perform the weighted aggregation using the actual models and their weights
+        average_model = weighted_aggregate_models(top_k_models, top_k_weights)
     else:
-        # Model inference
-        # accuracies.append(model_inferece(dataset, models[0]))
-        accuracies[client_ids[0]] = model_inferece(dataset, models[0])
-    # shapley_vals = calculate_shapley_values(client_ids, models, dataset)
-    # Apply inference on the models
-    # distribute tokens with respect to accuracies
+        accuracies[client_ids[0]] = model_inference(dataset, models[0])
 
+    # Optionally, you can calculate Shapley values or distribute tokens with respect to accuracies here.
     end_processing_time = time.time()
     end_total_time = time.time()
 
@@ -278,19 +267,24 @@ def main(req):
     print(f"Total data fetch time: {fetch_time}")
     print(f"Total processing time: {processing_time}")
     print(f"Total time: {total_time}")
-    print(f"Total cost: {total_time*cost_per_hour/3600}")
-    print(f"Total communication cost: {fetch_time*cost_per_hour/3600}")
-    print(f"Total processing cost: {processing_time*cost_per_hour/3600}")
+    print(f"Total cost: {total_time * cost_per_hour / 3600}")
+    print(f"Total communication cost: {fetch_time * cost_per_hour / 3600}")
+    print(f"Total processing cost: {processing_time * cost_per_hour / 3600}")
 
 
 if __name__ == "__main__":
-    main()
+    # For direct execution, provide a default request if none is supplied.
+    import sys
+
+    req = sys.argv[1] if len(sys.argv) > 1 else "round=1"
+    main(req)
 
 
 def handle(req):
-    """handle a request to the function
+    """Handle a request to the function.
+
     Args:
-        req (str): request body
+        req (str): Request body.
     """
     main(req)
     return

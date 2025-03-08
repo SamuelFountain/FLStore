@@ -12,6 +12,8 @@ from urllib.parse import parse_qs
 
 
 sys.path.insert(0, "/home/uom/Baselines/utils")
+sys.path.insert(0, "/home/app/function/utils")
+sys.path.insert(0, "./utils")
 
 from minio_data import readAndCreateModels
 
@@ -107,7 +109,7 @@ def calculate_cosine_similarity(model1_params, model2_params):
 
 
 def main():
-    for round_no in range(1, 51):
+    for round_no in range(1, 6):
         print(f"Processing round {round_no}")
         round_no = str(round_no)
         gc.collect()
@@ -169,5 +171,5 @@ def handle(req):
     Args:
         req (str): request body
     """
-
+    main()
     return req

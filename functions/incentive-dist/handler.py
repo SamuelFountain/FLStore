@@ -189,7 +189,7 @@ def main():
     PER_CLIENT = True
     tokens = 100000
     tokens_per_round = tokens / ROUNDS
-    for round_no in range(1, 50):
+    for round_no in range(1, 6):
         accuracies = {}
         tokens_per_client = {}
         print(f"Processing round {round_no}")
@@ -258,5 +258,5 @@ def handle(req):
     Args:
         req (str): request body
     """
-
+    main()
     return req

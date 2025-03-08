@@ -8,22 +8,7 @@ functions:
     handler: ./k-mean
     image: fount032/k-mean:latest
     limits:
-      memory: 40960Mi
-      #memory: 10g
-    requests:
-      memory: 4096Mi
-    environment:
-      write_timeout: 10m2s
-      read_timeout: 10m2s
-      exec_timeout: 50m
-      handler_wait_duration: 50m50s
-      healthcheck_interval: 50s
-  infr:
-    lang: python3
-    handler: ./infr
-    image: fount032/infr:latest
-    limits:
-      memory: 40960Mi
+      # memory: 40960Mi
       #memory: 10g
     requests:
       memory: 4096Mi
@@ -38,7 +23,7 @@ functions:
     handler: ./incentive-dist
     image: fount032/incentive-dist:latest
     limits:
-      memory: 40960Mi
+      # memory: 40960Mi
       #memory: 10g
     requests:
       memory: 4096Mi
@@ -53,7 +38,7 @@ functions:
     handler: ./contribution-calculation
     image: fount032/contribution-calculation:latest
     limits:
-      memory: 40960Mi
+      # memory: 40960Mi
       #memory: 10g
     requests:
       memory: 4096Mi
@@ -68,7 +53,7 @@ functions:
     handler: ./cluster-based-personalization
     image: fount032/cluster-based-personalization:latest
     limits:
-      memory: 40960Mi
+      # memory: 40960Mi
       #memory: 10g
     requests:
       memory: 4096Mi
@@ -83,7 +68,7 @@ functions:
     handler: ./cosine-sim-mal-clients
     image: fount032/cosine-sim-mal-clients:latest
     limits:
-      memory: 40960Mi
+      # memory: 40960Mi
       #memory: 10g
     requests:
       memory: 4096Mi
@@ -98,7 +83,7 @@ functions:
     handler: ./client-scheduling-cosine-sim
     image: fount032/client-scheduling-cosine-sim:latest
     limits:
-      memory: 40960Mi
+      # memory: 40960Mi
       #memory: 10g
     requests:
       memory: 4096Mi
@@ -113,7 +98,7 @@ functions:
     handler: ./client-scheduling-inf
     image: fount032/client-scheduling-inf:latest
     limits:
-      memory: 40960Mi
+      # memory: 40960Mi
       #memory: 10g
     requests:
       memory: 4096Mi
@@ -128,7 +113,7 @@ functions:
     handler: ./aggreb
     image: fount032/aggreb:latest
     limits:
-      memory: 40960Mi
+      # memory: 40960Mi
       #memory: 10g
     requests:
       memory: 4096Mi
@@ -143,7 +128,7 @@ functions:
     handler: ./debug
     image: fount032/debug:latest
     limits:
-      memory: 40960Mi
+      # memory: 40960Mi
       #memory: 10g
     requests:
       memory: 4096Mi
@@ -153,18 +138,33 @@ functions:
       exec_timeout: 50m
       handler_wait_duration: 50m50s
       healthcheck_interval: 50s
-#  llama:
-#    lang: python3
-#    handler: ./llama
-#    image: fount032/llama:latest
-#    limits:
-#      memory: 10Gi
-#      #memory: 10g
-#    requests:
-#      memory: 10Gi
-#    environment:
-#      write_timeout: 10m2s
-#      read_timeout: 10m2s
-#      exec_timeout: 50m
-#      handler_wait_duration: 50m50s
-#      healthcheck_interval: 50s
+  infr:
+    lang: python3
+    handler: ./infr
+    image: fount032/infr:latest
+    limits:
+      # memory: 40960Mi
+      #memory: 10g
+    requests:
+      memory: 4096Mi
+    environment:
+      write_timeout: 10m2s
+      read_timeout: 10m2s
+      exec_timeout: 50m
+      handler_wait_duration: 50m50s
+      healthcheck_interval: 50s
+  # llama:
+  #   lang: python3
+  #   handler: ./llama
+  #   image: fount032/llama:latest
+  #   limits:
+  #     # memory: 10Gi
+  #     #memory: 10g
+  #   requests:
+  #     # memory: 10Gi
+  #   environment:
+  #     write_timeout: 10m2s
+  #     read_timeout: 10m2s
+  #     exec_timeout: 50m
+  #     handler_wait_duration: 50m50s
+  #     healthcheck_interval: 50s

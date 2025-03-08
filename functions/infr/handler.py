@@ -12,6 +12,7 @@ from urllib.parse import parse_qs
 
 
 sys.path.insert(0, "/home/app/function/utils")
+sys.path.insert(0, "./utils")
 
 from minio_data import readAndCreateModels, get_minio_client
 from minio_data import fetch_dataset
@@ -136,3 +137,4 @@ def handle(req):
     req = main()
     print(f"req is {repr(req)}: End")
     return req
+
