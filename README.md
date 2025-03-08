@@ -16,15 +16,29 @@ FLStore integrates seamlessly into existing FL frameworks with minimal modificat
 
 ### Quick Setup (Recommended: Ubuntu Linux)
 
-Clone and quickly set up FLStore using the provided script, which fully automates environment setup, dependency installation, MinIO, OpenFaaS, and experiment execution:
+Clone and set up FLStore using a fully automated script:
 
 ```bash
 git clone https://github.com/SamuelFountain/FLStore
 cd FLStore
-bash run_example.sh  # Automatically sets up environment, installs MinIO, OpenFaaS, and all dependencies
+bash run_example.sh  # Sets up Conda, OpenFaaS, MinIO, downloads data, deploys functions, and runs experiments interactively
 ```
 
-**Tip:** Customize `run_example.sh` for GPU support or other specific requirements.
+This script will:
+- Install Conda, OpenFaaS, MinIO, and other dependencies (Docker and containerd should be pre-installed).
+- Build and deploy experimental data to MinIO.
+- Prompt you to select non-training workloads (functions) such as scheduling, debugging, clustering, etc.
+- Run selected workloads for a few rounds, print results, and teardown the dev environment.
+
+---
+
+### 🧹 Cleanup
+
+Use the provided script to clean up resources created by FLStore (especially if using `k3s` and OpenFaaS setup):
+
+```bash
+bash cleanup.sh
+```
 
 ---
 
@@ -44,10 +58,10 @@ FLStore/
 │   ├── __init__.py        # Python package initialization
 │   ├── cache.py           # Caching functionality
 │   └── compute.py         # Computation functionality
-├── cleanup.sh             # Cleans up resources created by FLStore deployment
-├── run_example.sh         # Fully automated FLStore setup and experiment execution script
-├── set_conda.sh           # Conda environment setup (optional manual usage)
-├── README.md             # Project documentation
+├── cleanup.sh             # Cleans up resources created by FLStore deployment (including k3s setup)
+├── run_example.sh         # Automated setup and execution of FLStore and experiments
+├── set_conda.sh           # Optional manual Conda environment setup script
+├── README.md              # Project documentation
 ├── .gitattributes         # Git attributes configuration
 └── .gitignore             # Git ignore configuration
 ```
@@ -60,17 +74,19 @@ FLStore/
 - **Hardware:** Standard server hardware (no specialized equipment required; GPU optional)
 - **Software:**
   - Python (via Anaconda)
-  - Docker and OpenFaaS
+  - Docker (must be pre-installed)
+  - Containerd (recommended)
+  - OpenFaaS
   - MinIO or similar object store (for persistent FL metadata storage)
 
 ---
 
 ## 📈 Benchmarks
 
-| Metric           | Average Reduction | Peak Reduction |
-|------------------|-------------------|----------------|
-| Latency          | 71%               | 99.7%          |
-| Operational Cost | 92.45%            | 98.8%          |
+| Metric            | Average Reduction | Peak Reduction |
+|-------------------|-------------------|----------------|
+| Latency           | 71%               | 99.7%          |
+| Operational Cost  | 92.45%            | 98.8%          |
 
 Comparisons made against traditional cloud object storage (e.g., AWS S3) and cloud caching solutions (e.g., AWS ElastiCache).
 
