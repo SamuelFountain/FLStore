@@ -8,47 +8,23 @@ FLStore addresses challenges of **non-training workloads**—such as scheduling,
 - **Latency:** Average reduction of **71%** (peak **99.7%**)
 - **Cost:** Average savings of **92.45%** (peak **98.8%**)
 
-FLStore integrates seamlessly into existing FL frameworks with minimal changes.
+FLStore integrates seamlessly into existing FL frameworks with minimal modifications.
 
 ---
 
 ## 📦 Quick Installation
 
-### Quick Setup (Linux)
+### Quick Setup (Recommended: Ubuntu Linux)
 
-Clone and set up FLStore quickly:
+Clone and quickly set up FLStore using the provided script, which fully automates environment setup, dependency installation, MinIO, OpenFaaS, and experiment execution:
 
 ```bash
 git clone https://github.com/SamuelFountain/FLStore
 cd FLStore
-bash set_conda.sh  # Customize if needed
-pip install -r requirements.txt && pip install -e .
+bash run_example.sh  # Automatically sets up environment, installs MinIO, OpenFaaS, and all dependencies
 ```
 
-**Tip:** For GPU support or custom parameters, update `set_conda.sh`.
-
----
-
-### Installation from Source (Linux/MacOS)
-
-With Anaconda installed, run:
-
-```bash
-cd FLStore
-
-# Set FLStore home
-conda init bash
-export FLSTORE_HOME=$(pwd)
-echo 'export FLSTORE_HOME=$(pwd)' >> ~/.bashrc
-source ~/.bashrc
-
-# Create and activate conda environment
-conda env create -f environment.yml
-conda activate flstore
-pip install -r requirements.txt && pip install -e .
-```
-
-**Note:** Install Docker and OpenFaaS if deploying serverless functions in production.
+**Tip:** Customize `run_example.sh` for GPU support or other specific requirements.
 
 ---
 
@@ -56,24 +32,24 @@ pip install -r requirements.txt && pip install -e .
 
 ```plaintext
 FLStore/
-├── fetch_experiments/    # Scripts to fetch and post FL metadata
-│   ├── __init__.py       # Python package initialization
-│   ├── fetch.py          # Data fetching script
-│   └── post.py           # Data posting script
-├── run_experiments/      # Experimental evaluation scripts
-│   ├── __init__.py       # Python package initialization
-│   ├── experiment1.py    # First experiment script
-│   └── experiment2.py    # Second experiment script
-├── serverless/           # Serverless caching and compute functions
-│   ├── __init__.py       # Python package initialization
-│   ├── cache.py          # Caching functionality
-│   └── compute.py        # Computation functionality
-├── cleanup.sh            # Script to clean resources
-├── run_example.sh        # Basic FLStore deployment example script
-├── set_conda.sh          # Conda environment setup script
-├── README.md             # Documentation
-├── .gitattributes        # Git attributes configuration
-└── .gitignore            # Git ignore configuration
+├── fetch_experiments/     # Scripts to fetch and post FL metadata
+│   ├── __init__.py        # Python package initialization
+│   ├── fetch.py           # Data fetching script
+│   └── post.py            # Data posting script
+├── run_experiments/       # Experimental evaluation scripts
+│   ├── __init__.py        # Python package initialization
+│   ├── experiment1.py     # First experiment script
+│   └── experiment2.py     # Second experiment script
+├── serverless/            # Serverless caching and compute functions
+│   ├── __init__.py        # Python package initialization
+│   ├── cache.py           # Caching functionality
+│   └── compute.py         # Computation functionality
+├── cleanup.sh             # Cleans up resources created by FLStore deployment
+├── run_example.sh         # Fully automated FLStore setup and experiment execution script
+├── set_conda.sh           # Conda environment setup (optional manual usage)
+├── README.md             # Project documentation
+├── .gitattributes         # Git attributes configuration
+└── .gitignore             # Git ignore configuration
 ```
 
 ---
@@ -95,6 +71,8 @@ FLStore/
 |------------------|-------------------|----------------|
 | Latency          | 71%               | 99.7%          |
 | Operational Cost | 92.45%            | 98.8%          |
+
+Comparisons made against traditional cloud object storage (e.g., AWS S3) and cloud caching solutions (e.g., AWS ElastiCache).
 
 ---
 
